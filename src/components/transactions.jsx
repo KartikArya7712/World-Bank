@@ -1,0 +1,70 @@
+import  Axios  from "axios";
+import React from "react";
+import image from './images/background_page.jpg'
+import moment from 'moment';
+import Navbar from "./Navbar";
+
+
+export default class Transactions extends React.Component{
+    constructor(props){
+        super(props);
+        this.state={
+            transactions:[]
+        }
+    }
+    componentDidMount(){
+        Axios.get('http://localhost:5000/transactions')
+            .then(res=>{
+                this.setState({
+                    transactions:res.data
+                })
+            })
+            .catch(err=>console.log(err.message))
+    }
+
+    render(){
+        return(
+            <div>
+                <Navbar/>
+                <h2 className="text-center   text-uppercase font-weight-bold">transcations page</h2>
+                {/* <h6 className="text-center mb-4">last 10 transcations</h6> */}
+                <div className='container shadow px-0 rounded'>
+                    <table className="table table-secondary table-bordered border-secondary text-center my-auto">
+                        <thead>
+                            <tr className="text-uppercase font-weight-bold">
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Amount</th>
+                                <th>Date  Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {this.state.transactions.map((data, index)=>{
+                                return(
+                                    <tr key={index}>
+                                        <td>{data.from}</td>
+                                        <td>{data.to}</td>
+                                        <td>{data.amount}</td>
+                                        <td>{moment(data.date).format("MMMM Do YYYY, h:mm:ss a")}</td>
+                                    </tr>
+                                )
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+                <div className='overflow-hidden'>
+                            <img src={image} style={{
+                                position: 'absolute',
+                                left: '0',
+                                top: '0',
+                                height: '100vh',
+                                width:'100vw',
+                                opacity: '0.25',
+                                zIndex:'-1'
+                                
+                            }} alt="helloworld" className='w-100' />
+                        </div>
+            </div>
+        )
+    }
+}
